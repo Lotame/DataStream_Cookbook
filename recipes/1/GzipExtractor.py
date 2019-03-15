@@ -10,26 +10,17 @@
 #     python GzipExtractor.py /directory/containing/datastream/gzip/files
 #
 
-# System Path
-import sys
-sys.path.append('../')
-
-# Lotame
-from lib import Lotame
-
-# AWS
-
-# Utilities
-import os, re, gzip, glob
+# Utilites
+import sys, os, re, gzip, glob
 
 def main():
     path = sys.argv[1]
     for gzipped in glob.glob(os.path.join(path, '*.gz')):
         uncompressed = re.sub('.gz$', '.json', gzipped)
         with gzip.open(gzipped, 'rb') as g:
-            file_content = g.read()
+            uncompressed_file_contents = g.read()
             with open(uncompressed, 'w') as u:
-                u.write(file_content)
+                u.write(uncompressed_file_contents)
 
 if __name__ == '__main__':
     sys.exit(main())
