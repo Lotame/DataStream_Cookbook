@@ -1,5 +1,5 @@
 # Recipe 1
-#### ...or how to start to make sense of all these DataStream files...
+#### ...or how I started to make sense of all these DataStream files...
 
 So I've got some DataStream files downloaded. 
 
@@ -31,7 +31,7 @@ import os, glob, re, gzip
 ---
 I think I'm going to just test a file first to make sure this idea works.
 
-`gzip.open()` reads a gzipped file and gives me back the uncompressed contents, so I'm going to try that print out the result.
+`gzip.open()` reads a gzipped file and gives me back the uncompressed contents, so I'm going to try that and print out the result.
 ```python
 gzipped = "/path/to/my/file.gz"
 with gzip.open(gzipped, 'rb') as g:
