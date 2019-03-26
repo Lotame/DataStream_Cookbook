@@ -38,3 +38,10 @@ Thumbs.db
 ##########
 *.pyc
 __pycache__
+
+# dir #
+#######
+data/
+mapping/
+
+

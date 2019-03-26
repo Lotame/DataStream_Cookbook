@@ -61,6 +61,13 @@ def main():
             print("mapping path not exists, create the directory first")
             os.system("mkdir -p %s" % mapping_path)
 
+    if output_dir:
+        if os.path.isdir(output_dir):
+            print("data path exists, start to download feed file, will overwrite the old file")
+        else:
+            print("data path not exists, create the directory first")
+            os.system("mkdir -p %s" % output_dir)
+
     mapping_download_finised = set([])
     for update in updates:
 
@@ -93,8 +100,8 @@ def main():
                     s3.Object(mapping_bucket_name, mapping_key).download_file(os.path.join(mapping_path, mapping_name))
                     mapping_download_finised.add(mapping_file)
             for i, file_object in enumerate(file_objects):
-                key = prefix + "/" + file_object
-                output = output_dir + file_object
+                key = os.path.join(prefix, file_object)
+                output = os.path.join(output_dir, file_object)
                 # print "\tdownloading "+output+"\n"
                 s3.Object(bucket_name, key).download_file(output)
                 ProgressBar.print_progress(i + 1, total_objects, prefix='\tprogress:', suffix='complete', bar_length=50)
