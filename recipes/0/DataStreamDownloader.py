@@ -10,8 +10,9 @@
 #     python DataStreamDownloader.py /output/directory/for/datastream/gzip/files
 #
 
-
+import argparse
 import sys
+import os
 
 sys.path.append('../')
 
@@ -32,16 +33,35 @@ def main():
     print ""
     print "searching for firehose feed updates"
 
-    output_dir = sys.argv[1]
+    parser = argparse.ArgumentParser(description='Process parameters for demo training')
+    parser.add_argument('--data_path', dest='data_path', required=True,
+                        help='the path to save the actual data')
+    parser.add_argument('--mapping_path', dest='mapping_path', required=False, default=None,
+                        help='path to save the mapping metadata to path')
+    parser.add_argument('--hour', dest='hour', required=False, default=1,
+                        help='default number of hour data to get')
+    args = parser.parse_args()
+
+    output_dir = args.data_path
+    mapping_path = args.mapping_path
+    hour = args.hour
 
     firehose = Lotame.FirehoseService()
-    updates = firehose.getUpdates(hours=1)
+    updates = firehose.getUpdates(hours=hour)
 
     print "found " + str(len(updates)) + "\n"
 
     if len(updates) == 0:
         sys.exit()
 
+    if mapping_path:
+        if os.path.isdir(mapping_path):
+            print("mapping path exists, start to download mapping file, will overwrite the old file")
+        else:
+            print("mapping path not exists, create the directory first")
+            os.system("mkdir -p %s" % mapping_path)
+
+    mapping_download_finised = set([])
     for update in updates:
 
         s3creds = update['s3creds']
@@ -53,7 +73,6 @@ def main():
             aws_session_token=s3creds['sessionToken']
         )
         s3 = aws_session.resource('s3')
-
         for feed in feeds:
             feed_id = feed['id']
             feed_location = feed['location']
@@ -64,6 +83,15 @@ def main():
             print "processing feed " + str(feed_id)
             # print str(total_objects)+" new files"
             ProgressBar.print_progress(0, total_objects, prefix='\tprogress:', suffix='complete', bar_length=50)
+            if mapping_path:
+                mapping_file = feed.get('metaDataFile', '')
+                # download the mapping file if we find the mapping path argument
+                if mapping_file and mapping_file not in mapping_download_finised:
+                    mapping_bucket_name = str(re.search("(?<=s3:\/\/)([\w-]+)", mapping_file).group(0))
+                    mapping_key = str(re.search("(?<=" + mapping_bucket_name + "\/)(.+)", mapping_file).group(0))
+                    mapping_name = str(re.search("[^\/]+$", mapping_file).group(0))
+                    s3.Object(mapping_bucket_name, mapping_key).download_file(os.path.join(mapping_path, mapping_name))
+                    mapping_download_finised.add(mapping_file)
             for i, file_object in enumerate(file_objects):
                 key = prefix + "/" + file_object
                 output = output_dir + file_object

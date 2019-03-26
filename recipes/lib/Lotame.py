@@ -270,7 +270,6 @@ class FirehoseService:
         updates = self.getUpdatesForFeeds(feeds, params)
         return updates
 
-
 #
 # BehaviorService Class
 #   Provides helper methods for the Lotame API behavior service
