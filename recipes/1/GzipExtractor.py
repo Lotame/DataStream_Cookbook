@@ -13,6 +13,7 @@
 # Utilites
 import sys, os, re, gzip, glob
 
+
 def main():
     path = sys.argv[1]
     for gzipped in glob.glob(os.path.join(path, '*.gz')):
@@ -21,6 +22,7 @@ def main():
             uncompressed_file_contents = g.read()
             with open(uncompressed, 'w') as u:
                 u.write(uncompressed_file_contents)
+
 
 if __name__ == '__main__':
     sys.exit(main())

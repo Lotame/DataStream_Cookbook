@@ -23,8 +23,9 @@
 
 # Utilities
 import sys, json, requests, ConfigParser
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from os.path import expanduser
+
 
 #
 # Prints current LotameApi version
@@ -32,17 +33,18 @@ from os.path import expanduser
 def version():
     print "2.0"
 
+
 #
 # Credentials Class
 #   Loads credentials and metadata from properties file
 #   Stores credentials and metadata for access by consumers
 #
 class Credentials:
-    
-    DEFAULT_PROPERTIES_FILENAME=expanduser("~")+"/"+"lotame.properties"
-    DEFAULT_PROFILE="default"
+    DEFAULT_PROPERTIES_FILENAME = expanduser("~") + "/" + "lotame.properties"
+    DEFAULT_PROFILE = "default"
 
-    def __init__(self, filename=DEFAULT_PROPERTIES_FILENAME, profile=DEFAULT_PROFILE, username=None, password=None, base_url=None, auth_url=None, client_id=None):
+    def __init__(self, filename=DEFAULT_PROPERTIES_FILENAME, profile=DEFAULT_PROFILE, username=None, password=None,
+                 base_url=None, auth_url=None, client_id=None):
         if username and password and base_url and auth_url and client_id:
             self.username = username
             self.password = password
@@ -51,15 +53,17 @@ class Credentials:
             self.client_id = client_id
         else:
             try:
+                print
                 config = ConfigParser.ConfigParser()
                 config.read(filename)
-                self.username = username or config.get(profile,"username")
-                self.password = password or config.get(profile,"password")
-                self.base_url = base_url or config.get(profile,"base_url")
-                self.auth_url = auth_url or config.get(profile,"auth_url")
-                self.client_id = client_id or config.get(profile,"client_id")
+                self.username = username or config.get(profile, "username")
+                self.password = password or config.get(profile, "password")
+                self.base_url = base_url or config.get(profile, "base_url")
+                self.auth_url = auth_url or config.get(profile, "auth_url")
+                self.client_id = client_id or config.get(profile, "client_id")
             except ConfigParser.Error as e:
                 print(e)
+
 
 #
 # Api Class
@@ -68,16 +72,16 @@ class Credentials:
 #   Provides helper methods for service authentication and api actions
 #
 class Api:
-
     # static class variables
-    REQUEST_GET="REQUEST_GET"
-    REQUEST_POSTBODY="REQUEST_POSTBODY"
-    REQUEST_POST="REQUEST_POST"
-    REQUEST_PUT="REQUEST_PUT"
-    REQUEST_DELETE="REQUEST_DELETE"
-    DEFAULT_PYTHON_HEADER={"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "User-Agent":"python" }
-    DEFAULT_JSON_RECEIVE_HEADER={'Accept':'application/json'}
-    DEFAULT_JSON_SEND_HEADER={'Content-type': 'application/json', 'Accept':'application/json'}
+    REQUEST_GET = "REQUEST_GET"
+    REQUEST_POSTBODY = "REQUEST_POSTBODY"
+    REQUEST_POST = "REQUEST_POST"
+    REQUEST_PUT = "REQUEST_PUT"
+    REQUEST_DELETE = "REQUEST_DELETE"
+    DEFAULT_PYTHON_HEADER = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain",
+                             "User-Agent": "python"}
+    DEFAULT_JSON_RECEIVE_HEADER = {'Accept': 'application/json'}
+    DEFAULT_JSON_SEND_HEADER = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
     # initialization method
     # allows specification of custom properties file and profile
@@ -87,13 +91,12 @@ class Api:
             credentials = Credentials()
         self.credentials = credentials
 
-    def populateUrlParams(self,url="",key="",val=""):
+    def populateUrlParams(self, url="", key="", val=""):
         if "?" not in url:
             url = url + "?" + str(key) + "=" + str(val)
         else:
             url = url + "&" + str(key) + "=" + str(val)
         return url
-
 
     def buildUrl(self, service="", params={}, auto_assign_client_id=True):
         if service == "":
@@ -104,9 +107,9 @@ class Api:
         for key, val in params.iteritems():
             if isinstance(val, list):
                 for v in val:
-                    url = self.populateUrlParams(url,key,v)
+                    url = self.populateUrlParams(url, key, v)
             else:
-                url = self.populateUrlParams(url,key,val)
+                url = self.populateUrlParams(url, key, val)
         return url
 
     def getTicketGrantingTicket(self, auth_url=None, user=None, password=None):
@@ -117,7 +120,7 @@ class Api:
         if auth_url is None:
             auth_url = self.credentials.auth_url
 
-        payload = {'username':user,'password':password}
+        payload = {'username': user, 'password': password}
         headers = self.DEFAULT_PYTHON_HEADER
         response = requests.post(auth_url, data=payload, headers=headers)
         # if "401" in response:
@@ -127,32 +130,33 @@ class Api:
 
     def getService_ticket(self, service="", grant_location=""):
         payload = {'service': service}
-        service_ticket = requests.post( grant_location, data=payload ).text
+        service_ticket = requests.post(grant_location, data=payload).text
         return service_ticket
 
     def initRequest(self, service="", auth_url=None, user=None, password=None):
-        grant_location = self.getTicketGrantingTicket(auth_url,user,password)
+        grant_location = self.getTicketGrantingTicket(auth_url, user, password)
         service_ticket = self.getService_ticket(service, grant_location)
         return service_ticket
 
     def performRequest(self, service="", auth_url=None, user=None, password=None, type=None, headers=None, body=None):
-        response=""
+        response = ""
         service_ticket = self.initRequest(service, auth_url, user, password)
-        service_url = (('%s&ticket=%s') % (service, service_ticket)) if '?' in service else (('%s?ticket=%s') % (service, service_ticket))
-        if type==self.REQUEST_GET:
+        service_url = (('%s&ticket=%s') % (service, service_ticket)) if '?' in service else (
+                ('%s?ticket=%s') % (service, service_ticket))
+        if type == self.REQUEST_GET:
             response = requests.get(service_url, headers=headers)
-        elif type==self.REQUEST_POSTBODY:
+        elif type == self.REQUEST_POSTBODY:
             response = requests.post(service_url, data=json.dumps(body), headers=headers)
-        elif type==self.REQUEST_POST:
+        elif type == self.REQUEST_POST:
             response = requests.post(service_url, headers=headers)
-        elif type==self.REQUEST_PUT:
+        elif type == self.REQUEST_PUT:
             response = requests.put(service_url, data=json.dumps(body), headers=headers)
-        elif type==self.REQUEST_DELETE:
+        elif type == self.REQUEST_DELETE:
             response = requests.delete(service_url, headers=headers)
         else:
             response = "Invalid request type"
         return response
-     
+
     def get(self, service, auth_url=None, user=None, password=None):
         # print "GET request " + service
         return self.performRequest(
@@ -212,19 +216,19 @@ class Api:
             headers=self.DEFAULT_JSON_RECEIVE_HEADER
         ).json()
 
+
 #
 # FirehoseService Class
 #   Provides helper methods for the Lotame API firehose service
 #
 class FirehoseService:
-
     # statics
-    FIREHOSE_FEEDS="/firehose/feeds"
-    FIREHOSE_UPDATES="/firehose/updates"
-    DEFAULT_HOURS=24
-    DEFAULT_MINUTES=0
-    DEFAULT_UTC=0
-    FEED_ID="feed_id"
+    FIREHOSE_FEEDS = "/firehose/feeds"
+    FIREHOSE_UPDATES = "/firehose/updates"
+    DEFAULT_HOURS = 24
+    DEFAULT_MINUTES = 0
+    DEFAULT_UTC = 0
+    FEED_ID = "feed_id"
 
     def __init__(self, api=None):
         if api is None:
@@ -232,7 +236,7 @@ class FirehoseService:
         self.api = api
 
     def getFeeds(self, params={}):
-        url = self.api.buildUrl(self.FIREHOSE_FEEDS,params)
+        url = self.api.buildUrl(self.FIREHOSE_FEEDS, params)
         feeds_response = self.api.get(url)
         feeds = []
         for feed_json in feeds_response['feeds']:
@@ -241,38 +245,39 @@ class FirehoseService:
 
     def getUpdatesForFeed(self, feed_id=0, params={}):
         if params == {}:
-            params = {self.FEED_ID:feed_id}
+            params = {self.FEED_ID: feed_id}
         else:
             params[self.FEED_ID] = feed_id
-        url = self.api.buildUrl(self.FIREHOSE_UPDATES,params)
+        url = self.api.buildUrl(self.FIREHOSE_UPDATES, params)
         feed_updates_response = self.api.get(url)
         return feed_updates_response
 
     def getUpdatesForFeeds(self, feeds=[], params={}):
         feeds_updates_responses = []
         for feed in feeds:
-            feeds_updates_responses.append(self.getUpdatesForFeed(feed['id'],params))
+            feeds_updates_responses.append(self.getUpdatesForFeed(feed['id'], params))
         return feeds_updates_responses
 
     def getUpdates(self, hours=DEFAULT_HOURS, minutes=DEFAULT_MINUTES, since=DEFAULT_UTC):
-        params={}
+        params = {}
         if since:
             since_utc = str(int(round(since)))
         elif hours or minutes:
-            since_utc = str(int(round(((datetime.now() - timedelta(hours=hours,minutes=minutes)) - datetime(1970,1,1)).total_seconds())))
-            params = {"since":since_utc}
+            since_utc = str(int(round(
+                ((datetime.now() - timedelta(hours=hours, minutes=minutes)) - datetime(1970, 1, 1)).total_seconds())))
+            params = {"since": since_utc}
         feeds = self.getFeeds()
-        updates = self.getUpdatesForFeeds(feeds,params)
+        updates = self.getUpdatesForFeeds(feeds, params)
         return updates
+
 
 #
 # BehaviorService Class
 #   Provides helper methods for the Lotame API behavior service
 #
 class BehaviorService:
-
     # statics
-    BEHAVIOR_SERVICE="/behaviors"
+    BEHAVIOR_SERVICE = "/behaviors"
 
     def __init__(self, api=None):
         if api is None:
@@ -280,23 +285,23 @@ class BehaviorService:
         self.api = api
 
     def get(self, behavior=""):
-        url = self.api.buildUrl(self.BEHAVIOR_SERVICE + "/" + str(behavior),{},False)
+        url = self.api.buildUrl(self.BEHAVIOR_SERVICE + "/" + str(behavior), {}, False)
         behavior = self.api.get(url)
         return behavior
 
     def getList(self, params={}):
-        url = self.api.buildUrl(self.BEHAVIOR_SERVICE,params)
+        url = self.api.buildUrl(self.BEHAVIOR_SERVICE, params)
         behavior_list = self.api.get(url)
         return behavior_list
+
 
 #
 # AudienceService Class
 #   Provides helper methods for the Lotame API audience service
 #
 class AudienceService:
-
     # statics
-    AUDIENCE_SERVICE="/audiences"
+    AUDIENCE_SERVICE = "/audiences"
 
     def __init__(self, api=None):
         if api is None:
@@ -304,11 +309,11 @@ class AudienceService:
         self.api = api
 
     def get(self, audience=""):
-        url = self.api.buildUrl(self.AUDIENCE_SERVICE + "/" + str(audience),{},False)
+        url = self.api.buildUrl(self.AUDIENCE_SERVICE + "/" + str(audience), {}, False)
         audience = self.api.get(url)
         return audience
 
     def getList(self, params={}):
-        url = self.api.buildUrl(self.AUDIENCE_SERVICE,params)
+        url = self.api.buildUrl(self.AUDIENCE_SERVICE, params)
         audience_list = self.api.get(url)
         return audience_list
