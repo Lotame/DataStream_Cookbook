@@ -33,12 +33,12 @@ def main():
     print ""
     print "searching for firehose feed updates"
 
-    parser = argparse.ArgumentParser(description='Process parameters for demo training')
+    parser = argparse.ArgumentParser(description='Process parameters for datastream download')
     parser.add_argument('--data_path', dest='data_path', required=True,
                         help='the path to save the actual data')
     parser.add_argument('--mapping_path', dest='mapping_path', required=False, default=None,
                         help='path to save the mapping metadata to path')
-    parser.add_argument('--hour', dest='hour', required=False, default=1,
+    parser.add_argument('--hour', dest='hour', required=False, default=1, type=int,
                         help='default number of hour data to get')
     args = parser.parse_args()
 
@@ -56,19 +56,19 @@ def main():
 
     if mapping_path:
         if os.path.isdir(mapping_path):
-            print("mapping path exists, start to download mapping file, will overwrite the old file")
+            print("mapping path exists: any files already in that directory may be overwritten")
         else:
-            print("mapping path not exists, create the directory first")
+            print("mapping path does not exist; it will be created")
             os.system("mkdir -p %s" % mapping_path)
 
     if output_dir:
         if os.path.isdir(output_dir):
-            print("data path exists, start to download feed file, will overwrite the old file")
+            print("data path exists: any files already in that directory may be overwritten")
         else:
-            print("data path not exists, create the directory first")
+            print("data path does not exist; it will be created")
             os.system("mkdir -p %s" % output_dir)
 
-    mapping_download_finised = set([])
+    mapping_download_finished = set([])
     for update in updates:
 
         s3creds = update['s3creds']
@@ -92,13 +92,13 @@ def main():
             ProgressBar.print_progress(0, total_objects, prefix='\tprogress:', suffix='complete', bar_length=50)
             if mapping_path:
                 mapping_file = feed.get('metaDataFile', '')
-                # download the mapping file if we find the mapping path argument
-                if mapping_file and mapping_file not in mapping_download_finised:
+                # download the mapping file if it exists and has not been downloaded already
+                if mapping_file and mapping_file not in mapping_download_finished:
                     mapping_bucket_name = str(re.search("(?<=s3:\/\/)([\w-]+)", mapping_file).group(0))
                     mapping_key = str(re.search("(?<=" + mapping_bucket_name + "\/)(.+)", mapping_file).group(0))
                     mapping_name = str(re.search("[^\/]+$", mapping_file).group(0))
                     s3.Object(mapping_bucket_name, mapping_key).download_file(os.path.join(mapping_path, mapping_name))
-                    mapping_download_finised.add(mapping_file)
+                    mapping_download_finished.add(mapping_file)
             for i, file_object in enumerate(file_objects):
                 key = os.path.join(prefix, file_object)
                 output = os.path.join(output_dir, file_object)
