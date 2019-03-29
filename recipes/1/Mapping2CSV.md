@@ -1,15 +1,14 @@
 # Recipe 1.1
-#### ...After we unzip and process the data stream file, we need to what it means...
+#### ...After we unzip and process the data stream file, we need to see what it means...
 
-So I've got some DataStream files processed. In this recipe, specifically, they go into a CSV file. 
-However, I get a bunch of behavior ids in the data, but we need a lookup file to check the meaning of
-the behaviors. In this task, we try to transform multiple mapping json.gz files got from recipe 0
+So I've downloaded some LDX DataStream files. In this recipe, specifically, they go into a CSV file. 
+However, I see a bunch of behavior ids in the data, but don't know what any of them mean! We need a lookup file to check the meaning of the behaviors. In this task, we try to transform multiple mapping.json.gz files got from recipe 0
 to one single CSV File for behavior lookup.
 
 
 ## Unzip the mapping.json.gz file
 
-First, we need to unzip the all mapping
+First, we need to unzip the mapping file.
 Similar to the introduction for recipe 1, I can just do this
 ```bash
 python GzipExtractor.py /directory/containing/my/mapping_files/
@@ -18,18 +17,17 @@ python GzipExtractor.py /directory/containing/my/mapping_files/
 
 ## Transform the mapping file to csv
 
-Second, after getting the unzipped mapping file, it is in Json format, how can we make that human readable?
-Lookup them in an Excel is a good way. We have the script to do that simply!
+Now, after getting the unzipped mapping file, it is in JSON format, which is fine for python but maybe we want to load this data into Excel or into a database as a table. We can easily do that using the JsonToCsvConverter.py script:
 
 ```bash
-# The result, theoretically is not a csv file because some behavior path include ",", so by default, we use special char \x01 as delimiter. However you 
+# The result is not technically a csv file - because some behavior paths include ",", we use special char \x01 as a delimiter instead of ",". However you 
 # are able to set to others. But don't suggest to set to "," or "\t", it may break the file format.
 # If you don't specify the csv_name, the name will be mapping.csv, if you don't specify csv_dir, the default will be identical to your mapping_path.
 python3 JsonToCsvConverter.py --mapping_path /directory/containing/my/unzip_mapping_files/ --csv_name mapping.csv --csv_dir /directory/containing/my/target_lookup_dir/  --delimiter "###"
 ```
 
 ## Check the output result
-Then we can check what the file looks like in this way
+Now we can check out the tabular-formatted file:
 
 ```bash
 head -n 6 mapping.csv
