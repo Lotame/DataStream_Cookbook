@@ -31,7 +31,7 @@ def main():
     parser = argparse.ArgumentParser(description='Parse the mapping json file to CSV format')
     parser.add_argument('--mapping_path', dest='mapping_path', required=True,
                         help='the path for the mapping json file')
-    parser.add_argument('--csv_name', dest='csv_name', required=False, default='mapping',
+    parser.add_argument('--csv_name', dest='csv_name', required=False, default='mapping.csv',
                         help='specify the file name to write the csv file')
     parser.add_argument('--csv_dir', dest='csv_dir', required=False, default='',
                         help='specify the dir to write the output file')
