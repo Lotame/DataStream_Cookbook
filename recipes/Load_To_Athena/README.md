@@ -1,27 +1,25 @@
 # Recipe Athena
 #### ...After I have the csv file for behavior mapping and data stream CSV file...
 
-Assume we have already finished transforming all nested data into an handsome format, like CSV, we can start
-to analyze the data.
+This recipe assumes I have some LDX (3rd-party) DataStream data downloaded and converted into csv files, as well as the accompanying LDX behavior mapping file downloaded and converted to a csv.
 
-In this Recipe, we will use AWS Athena to read this data, and do some trivial data analysis.
+In this Recipe, we will use AWS Athena to read this data, and do some really basic data analysis.
 
-## Step 1, Copy required data to your S3
+## Step 1: Copy DataStream data to an S3 bucket
 
 ```bash
 
-# Now assuming you have run all prepare step and we already have the mapping CSV file and the data stream file CSV file.
-# Assume you have correctly configure your AWS credential in your command line(https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html)
-# This command take very long time to run because the CSV data is too huge
+# Now assuming you have run all preparation steps and we already have the mapping CSV file and the data stream file CSV file(s).
+# Assume you have correctly configured your AWS CLI (command-line interface) credentials (see https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html)
+# This command may take a while to run if you have a large amount of data downloaded; if so, you can test using just a few data files instead of the whole set downloaded from previous steps
 
 aws s3 cp $PATH_TO_YOUR_LOCAL_MAPPING_CSV_FILE $PATH_TO_YOUR_S3_TARGET_MAPPING_CSV_DIRECTORY
 aws s3 cp $PATH_TO_YOUR_LOCAL_DATASTREAM_DIRECTORY/ $PATH_TO_YOUR_S3_TARGET_DATASTREAM_DIRECTORY --exclude "*" --include "*.csv"
 ```
 
-## Step 2, Get AWS Athena access and create the External table there refer to a S3 location
+## Step 2: Get AWS Athena access and define the table structures
 
-In this step, you may have some delimiter problem, here I assume you use "," as the delimiter for the 
-data stream sample data, and use a special charactor \001 as the mapping delimiter. You can change them if you want.
+Here I'm assuming you've used "," as the delimiter for the data stream sample data, and use a special charactor \001 as the mapping delimiter, as specified in earlier recipes. If you've used other delimiters, you will need to alter these table definitions accordingly.
 
 ```odpsql
 -- Assume you have copied all the data to s3 bucket correctly
@@ -43,9 +41,9 @@ location "$PATH_TO_YOUR_S3_TARGET_MAPPING_CSV_DIRECTORY"
 tblproperties ("skip.header.line.count"="1");
 ```
 
-## Step 3, Analyze the result
+## Step 3, Analyze the results
 
-Behavior id is annoying, I want to see what kind of interesting behavior I can use in data stream.
+Since integer behavior ids don't tell me anything useful, Let's find some interesting behaviors from the mapping file:
 
 ```odpsql
 select distinct behavior_path from Mapping_Sample limit 200 ;
@@ -70,8 +68,7 @@ select distinct behavior_path from Mapping_Sample limit 200 ;
 	Lotame Category Hierarchy^Relationships^Dating
 ```
 
-Oh Man, many interesting behavior names. As a sport fans like me, I want to know what kind of sport is the most popular in our data, so I will do
-this to figure out the answer. The hierarchy for sport is this Lotame Category Hierarchy^Sports & Recreation base on the data.
+Oh Man, many interesting behavior names. As a sport fans like me, I want to know what kind of sport is the most popular in our data, so I will run some simple analysis on the data to find out. The hierarchy for sport is this "Lotame Category Hierarchy^Sports & Recreation" in the mapping file, so any behaviors whose paths start with that substring are "sports" behaviors.
 
 ```odpsql
 -- Assume we already create DataStream_Sample and Mapping_Sample in Athena
