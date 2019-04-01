@@ -39,7 +39,7 @@ def main():
                     country = json_line['country']
                     region = json_line['region']
                     for event in json_line['events']:
-                        client = event['c']
+                        client = event.get('subSrc', '')
                         timestamp = event['ts']
                         if 'add' in event:
                             for behavior in event['add']:
