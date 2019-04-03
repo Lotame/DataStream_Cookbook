@@ -22,7 +22,7 @@
 #
 
 # Utilities
-import sys, json, requests, configparser
+import sys, json, requests, ConfigParser
 from datetime import datetime,timedelta
 from os.path import expanduser
 
@@ -51,14 +51,14 @@ class Credentials:
             self.client_id = client_id
         else:
             try:
-                config = configparser.ConfigParser()
+                config = ConfigParser.ConfigParser()
                 config.read(filename)
                 self.username = username or config.get(profile,"username")
                 self.password = password or config.get(profile,"password")
                 self.base_url = base_url or config.get(profile,"base_url")
                 self.auth_url = auth_url or config.get(profile,"auth_url")
                 self.client_id = client_id or config.get(profile,"client_id")
-            except configparser.Error as e:
+            except ConfigParser.Error as e:
                 print(e)
 
 #
