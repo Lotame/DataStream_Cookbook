@@ -22,7 +22,7 @@
 #
 
 # Utilities
-import sys, json, requests, ConfigParser
+import sys, json, requests, configparser
 from datetime import datetime,timedelta
 from os.path import expanduser
 
@@ -30,7 +30,7 @@ from os.path import expanduser
 # Prints current LotameApi version
 #
 def version():
-    print "2.0"
+    print("2.0")
 
 #
 # Credentials Class
@@ -51,14 +51,14 @@ class Credentials:
             self.client_id = client_id
         else:
             try:
-                config = ConfigParser.ConfigParser()
+                config = configparser.ConfigParser()
                 config.read(filename)
                 self.username = username or config.get(profile,"username")
                 self.password = password or config.get(profile,"password")
                 self.base_url = base_url or config.get(profile,"base_url")
                 self.auth_url = auth_url or config.get(profile,"auth_url")
                 self.client_id = client_id or config.get(profile,"client_id")
-            except ConfigParser.Error as e:
+            except configparser.Error as e:
                 print(e)
 
 #
@@ -101,7 +101,7 @@ class Api:
         url = self.credentials.base_url + service
         if auto_assign_client_id is True:
             url = url + "?client_id=" + str(self.credentials.client_id)
-        for key, val in params.iteritems():
+        for key, val in params.items():
             if isinstance(val, list):
                 for v in val:
                     url = self.populateUrlParams(url,key,v)
@@ -154,7 +154,7 @@ class Api:
         return response
      
     def get(self, service, auth_url=None, user=None, password=None):
-        # print "GET request " + service
+        # print("GET request " + service)
         return self.performRequest(
             service=service,
             auth_url=auth_url,
@@ -165,8 +165,8 @@ class Api:
         ).json()
 
     def postBody(self, service="", body="", auth_url=None, user=None, password=None):
-        # print "POST request: " + service
-        # print "body: " + str(body)
+        # print("POST request: " + service)
+        # print("body: " + str(body))
         return self.performRequest(
             service=service,
             auth_url=auth_url,
@@ -178,7 +178,7 @@ class Api:
         ).json()
 
     def post(self, service="", auth_url=None, user=None, password=None):
-        # print "POST request: " + service
+        # print("POST request: " + service)
         return self.performRequest(
             service=service,
             auth_url=auth_url,
@@ -189,8 +189,8 @@ class Api:
         ).json()
 
     def put(self, service="", body="", auth_url=None, user=None, password=None):
-        # print "POST request: " + service
-        # print "body: " + str(body)
+        # print("POST request: " + service)
+        # print("body: " + str(body))
         return self.performRequest(
             service=service,
             auth_url=auth_url,
@@ -202,7 +202,7 @@ class Api:
         ).json()
 
     def delete(self, service="", auth_url=None, user=None, password=None):
-        # print "DELETE request: " + service
+        # print("DELETE request: " + service)
         return self.performRequest(
             service=service,
             auth_url=auth_url,
