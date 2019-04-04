@@ -132,11 +132,11 @@ python GzipExtractor.py /directory/containing/my/files/
 
 
 ## JsonToCsvConverter.py
-`.json` grandeur... who am I kidding. I mean, JSON is a pretty cool guy. He's organized, explains himself well, and is pretty flexible at handling a lot of different scenarios thrown at him.
+`.json` grandeur... who am I kidding. I mean, don't get me wrong... JSON is a pretty cool guy. He's organized, explains himself well, and is pretty flexible at handling a lot of different scenarios thrown at him.
 
 But, and this is a pretty big BUT, I cannot lie...  a lot of the basic analysis tools these days run on SQL, and SQL doesn't play nicely with JSON. Don't blame JSON though, it's not his fault.
 
-There's solution. I just have to reach out to JSON's grandfather, CSV. He's not as flexible, sometimes harder to understand, and a bit rougher around the edges. That said, when it comes to loading data into relational databases, he's typically the one you want around.
+There's a solution, though. I just have to reach out to JSON's grandfather, CSV. He's not as flexible, sometimes harder to understand, and a bit rougher around the edges. That said, when it comes to loading data into relational databases, he's typically the one you want around.
 
 So, I'm going to take a crack at converting this JSON to CSV. The handoff isn't entirely without decisions, though, because JSON is a nested structure and CSV is inherently flat unless you want to embed some potentially messy fields into the mix like arrays or, even, JSON again. 
 
@@ -145,7 +145,9 @@ I don't want to do that, so I'm going to take the approach of flattening the dat
 OK, enough already with the attempted elocution, I'm going to start writing some of that code stuff.
 
 ---
-Just like before, I can use the `glob` First, I'll want to open and read the `.json` file, and, at the same time, create a new file so I can write the `.csv` output. For now, I'll just print out all the fields I find from a couple of lines of each file, so I can make a plan with how to handle each one.
+Just like before, I can use Python's `glob` to operate on a set of files in a directory. 
+
+First, I'll want to open and read each `.json` file, and, at the same time, create a new file so I can write the `.csv` output. For now, I'll just print out all the fields I find from a couple of lines of each file, so I can make a plan with how to handle each one.
 
 ```python
 path="/directory/containing/my/json/files/"
@@ -209,6 +211,8 @@ Found a Remove
 
 Well, it seems good at finding things. Maybe not Nemo, but certainly `add`'s and `remove`'s. And, in this particular case, finding actionable data is better than finding fish.
 
+---
+
 Now, in order to flatten this out to a `.csv`, I'll want to generate a line for every add and remove. There's also a host of other fields I want to write out to `.csv`, so I'll need to save those off as I go, like I've done before, so I can write them out later.
 
 ```python
@@ -234,6 +238,8 @@ for json_file in glob.glob(os.path.join(path, '*.json')):
 ```
 
 OK, now we're talking CSV's language. This gives me a nice, flattened set of data organized into rows that pretty much any data storage solution can import straight out of the box.
+
+---
 
 There's some code duplication in there though, and it'd be nice to write a CSV header in case I don't remember which field is what. 
 
