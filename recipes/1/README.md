@@ -9,6 +9,15 @@ Before I can do some neat stuff, I've got to get these files into some kind of f
 
 Looks like these files are all `.gz`... compressed gzipped files. I'll need to uncompress them before I can see what the data looks like and decide how to do neat things.
 
+## Ingredients
+1. Python version
+    >`2.7` or `3.6`
+
+2. Python modules 
+    >`sys`, `os`, `re`, `gzip`, `glob`, `json`, `argparse`
+
+3. A sense of adventure and awe of the unknown
+
 ## GzipExtractor.py
 
 Thankfully trusty ol' Python includes some utilities to do just this, so I'ma launch it and gather my ingredients.
