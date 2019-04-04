@@ -2,12 +2,12 @@
 #
 # Filename: 
 #
-#     JsonToCsvExtractor.py
+#     JsonToCsvConverter.py
 #
 #
 # Basic Usage:
 #
-#     python JsonToCsvExtractor.py /directory/containing/datastream/json/files
+#     python JsonToCsvConverter.py /directory/containing/datastream/json/files
 #
 
 # Utilities
