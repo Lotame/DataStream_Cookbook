@@ -2,6 +2,7 @@
 
 import sys
 
+
 # Print iterations progress
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
     """
@@ -23,4 +24,4 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
 
     if iteration == total:
         sys.stdout.write('\n')
-    sys.stdout.flush() 
+    sys.stdout.flush()

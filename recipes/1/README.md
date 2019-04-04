@@ -129,3 +129,184 @@ There, now I can just do this
 python GzipExtractor.py /directory/containing/my/files/
 ```
 ... and all that `.gz` goodness is now `.json` grandeur.
+
+
+## JsonToCsvConverter.py
+`.json` grandeur... who am I kidding. I mean, don't get me wrong... JSON is a pretty cool guy. He's organized, explains himself well, and is pretty flexible at handling a lot of different scenarios thrown at him.
+
+But, and this is a pretty big BUT, I cannot lie...  a lot of the basic analysis tools these days run on SQL, and SQL doesn't play nicely with JSON. Don't blame JSON though, it's not his fault.
+
+There's a solution, though. I just have to reach out to JSON's grandfather, CSV. He's not as flexible, sometimes harder to understand, and a bit rougher around the edges. That said, when it comes to loading data into relational databases, he's typically the one you want around.
+
+So, I'm going to take a crack at converting this JSON to CSV. The handoff isn't entirely without decisions, though, because JSON is a nested structure and CSV is inherently flat unless you want to embed some potentially messy fields into the mix like arrays or, even, JSON again. 
+
+I don't want to do that, so I'm going to take the approach of flattening the data out completely. It'll create more duplication, but I can easily use my query engines to aggregate what I want later on.
+
+OK, enough already with the attempted elocution, I'm going to start writing some of that code stuff.
+
+---
+Just like before, I can use Python's `glob` to operate on a set of files in a directory. 
+
+First, I'll want to open and read each `.json` file, and, at the same time, create a new file so I can write the `.csv` output. For now, I'll just print out all the fields I find from a couple of lines of each file, so I can make a plan with how to handle each one.
+
+```python
+path="/directory/containing/my/json/files/"
+for json_file in glob.glob(os.path.join(path, '*.json')):
+        csv_file = re.sub('.json$', '.csv', json_file)
+        with open(json_file, 'rb') as jf:
+            with open(csv_file, 'a') as cf:
+                for i,line in enumerate(jf):
+                    if i>=2:
+                        break
+                    json_line = json.loads(line)
+                    print(json_line)
+```
+
+```python
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'cookie', u'val': u''}, u'events': [{u'c': 2215, u'add': [8851984, 14206839, 13114472, 34922564, 2296573], u'tap': u'DEVICE', u'ts': 1552646987}]}
+{u'country': u'CA', u'region': u'na', u'id': {u'type': u'cookie', u'val': u''}, u'events': [{u'c': 2215, u'add': [648203, 2296565, 13114472, 24729402, 14198343, 8851920, 2296573], u'tap': u'DEVICE', u'ts': 1552646990}]}
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'mobile', u'sub_type': u'GAID', u'val': u'ea1e0770-bab0-43ae-8338-014486230c0f'}, u'events': [{u'c': 2215, u'add': [13114472], u'tap': u'DEVICE', u'ts': 1552639810}]}
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'mobile', u'sub_type': u'SHA1', u'val': u'2ceda19060041c03d9aeb2473872563e8e16542b'}, u'events': [{u'c': 2215, u'add': [13114472, 648377, 24729307], u'tap': u'DEVICE', u'ts': 1552639882}]}
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'25d9ba3bfd1b558efd03ad963a84fd92'}, u'events': [{u'c': 2215, u'add': [8852078, 34922299, 2296544, 58367460, 648085, 24729309, 61799346], u'tap': u'DEVICE', u'ts': 1552657490}]}
+{u'country': u'CA', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'd6b776b5cb3d089ce133e0d9b86edcdf'}, u'events': [{u'c': 2215, u'add': [43594061, 648203, 12863912, 2296544, 24729402, 8851920, 48689287], u'tap': u'DEVICE', u'ts': 1552657702}]}
+```
+
+Nice, OK, good stuff. 
+
+I'll need to deal with those array fields in order to make a flat CSV file. I'll concentrate on those first.
+
+---
+
+Looks like the only arrays I can find are contained in the `events` field, so I'm going to unpack that a bit... multiple events per line, each with a `c` and `ts` (i.e. client and timestamp), and each with potentially multiple `add`'s or `remove`'s. 
+
+This calls for the mighty for loop, and so for loop I shall.
+
+```python
+path="/directory/containing/my/json/files/"
+for json_file in glob.glob(os.path.join(path, '*.json')):
+        csv_file = re.sub('.json$', '.csv', json_file)
+        with open(json_file, 'rb') as jf:
+            with open(csv_file, 'a') as cf:
+                for i,line in enumerate(jf):
+                    if i>=2:
+                        break
+                    json_line = json.loads(line)
+                    for event in json_line['events']:
+                        client=event['c']
+                        timestamp=event['ts']
+                        if 'add' in event:
+                            print("Found an Add")
+                        if 'remove' in event:
+                            print("Found a Remove")
+```
+
+```python
+Found an Add
+Found a Remove
+Found an Add
+Found an Add
+Found an Add
+Found a Remove
+```
+
+Well, it seems good at finding things. Maybe not Nemo, but certainly `add`'s and `remove`'s. And, in this particular case, finding actionable data is better than finding fish.
+
+---
+
+Now, in order to flatten this out to a `.csv`, I'll want to generate a line for every add and remove. There's also a host of other fields I want to write out to `.csv`, so I'll need to save those off as I go, like I've done before, so I can write them out later.
+
+```python
+for json_file in glob.glob(os.path.join(path, '*.json')):
+        csv_file = re.sub('.json$', '.csv', json_file)
+        with open(json_file, 'rb') as jf:
+            with open(csv_file, 'a') as cf:
+                for i,line in enumerate(jf):
+                    if i>=2:
+                        break
+                    json_line = json.loads(line)
+                    profile_id = json_line['id']['val']
+                    profile_type = json_line['id']['type']
+                    country = json_line['country']
+                    region = json_line['region']
+                    for event in json_line['events']:
+                        client=event['c']
+                        timestamp=event['ts']
+                        if 'add' in event:
+                            csv_file.write(str(profile_id)+","+str(profile_type)+","+str(region)+","+str(country)+","+str(client)+","+str(behavior)+","+str(timestamp)+","+"add")
+                        if 'remove' in event:
+                            csv_file.write(str(profile_id)+","+str(profile_type)+","+str(region)+","+str(country)+","+str(client)+","+str(behavior)+","+str(timestamp)+","+"remove")
+```
+
+OK, now we're talking CSV's language. This gives me a nice, flattened set of data organized into rows that pretty much any data storage solution can import straight out of the box.
+
+---
+
+There's some code duplication in there though, and it'd be nice to write a CSV header in case I don't remember which field is what. 
+
+I also really want to wrap this in yet another bash executable, just so I can run it with cron, or automate it in some other fashionable style.
+
+```python
+#!/usr/bin/python
+#
+# Filename: 
+#
+#     JsonToCsvConverter.py
+#
+#
+# Basic Usage:
+#
+#     python JsonToCsvConverter.py /directory/containing/datastream/json/files
+#
+
+# Utilities
+import sys, os, re, glob, json
+
+def writeCsvHeader(csv_file=None):
+    csv_file.write("id,type,region,country,client_id,behavior_id,timestamp,action")
+    csv_file.write("\n")
+
+def writeCsvLine(csv_file=None,wrote_header=False,profile_id="",profile_type="",region="",country="",client="",behavior="",timestamp="",add=True):
+    if not wrote_header:
+        writeCsvHeader(csv_file)
+    add_string = "add" if add is True else "remove"
+    csv_file.write(str(profile_id)+","+str(profile_type)+","+str(region)+","+str(country)+","+str(client)+","+str(behavior)+","+str(timestamp)+","+add_string)
+    csv_file.write("\n")
+    return True
+
+def main():
+    path = sys.argv[1]
+    for json_file in glob.glob(os.path.join(path, '*.json')):
+        csv_file = re.sub('.json$', '.csv', json_file)
+        with open(json_file, 'rb') as jf:
+            with open(csv_file, 'a') as cf:
+                wrote_header=False
+                for line in jf:
+                    json_line = json.loads(line)
+                    profile_id = json_line['id']['val']
+                    profile_type = json_line['id']['type']
+                    country = json_line['country']
+                    region = json_line['region']
+                    for event in json_line['events']:
+                        client = event['c']
+                        timestamp = event['ts']
+                        if 'add' in event:
+                            for behavior in event['add']:
+                                wrote_header = writeCsvLine(csv_file=cf,wrote_header=wrote_header,profile_id=profile_id,profile_type=profile_type,region=region,country=country,client=client,behavior=behavior,timestamp=timestamp,add=True)
+                        if 'remove' in event:
+                            for behavior in event['remove']:
+                                wrote_header = writeCsvLine(csv_file=cf,wrote_header=wrote_header,profile_id=profile_id,profile_type=profile_type,region=region,country=country,client=client,behavior=behavior,timestamp=timestamp,add=False)
+
+if __name__ == '__main__':
+    sys.exit(main())
+```
+
+There, that's much better. Now I have a self-documenting CSV that I can use pretty much anywhere I like. 
+
+Onto the same thing I do every night- using this data to conquer the world...
+
+...on second thought, maybe something simpler, like an Excel sheet. 
+
+Or, maybe something fun, like a streaming data dashboard. 
+
+Or... possibilities being their endless selves, now that I have usable Datastream data, I can concentrate on whatever maybes may come.
+
