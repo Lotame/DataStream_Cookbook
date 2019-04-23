@@ -1,50 +1,36 @@
-# DataStream Cookbook
+# Data Stream Cookbook
 
 ### Welcome Data Chefs! 
 
-Whether this is your first bake or you’ve already earned a couple Michelin stars, this GitHub is the place for you to get started with the Lotame Data Stream suite of products. 
+Whether this is your first bake or you’ve already earned a couple michelin stars, this GitHub is the place for you to get started with the Lotame Data Stream suite of products. 
 
-Get your ingredients and tools together and get stuck in.
+#### What is the Lotame Data Stream?
 
-#### What can you do here? 
+Data Stream is Lotame’s big data firehose, supplying billions of consumer profiles to support enterprise-level data modeling and applications, such as content and product recommendations, personalized digital experiences, fraud prevention and risk mitigation efforts, attribution modeling, Customer Relationship Management (CRM) tools, and deeper, more valuable insights into your target consumers around the world.
 
-* Easily pull down Lotame Data Stream files 
+Technically, it’s a suite of different types of files that we make available to our customers. These files can be used alone or joined with each other to answer myriad use cases of analysis and segmentation. 
 
+With Data Stream, customers can gain access to an always-on firehose of:
+*   Your own first-party data in hourly log files. 
+*   Consumer attribute and behavioral enrichment data from Lotame’s global data marketplaces, Lotame’s Device Graph technology, which connects customer data across devices and platforms, driving engagement anywhere and on any screen. 
+*   A log file of the location down to Zip+4 of devices as they hit our edge services. 
+*   A mapping file of the device identifiers from Lotame to over 20 activation and adtech partners as well your companies user ids. 
 
-* Easily transform those Lotame Data Stream files into .json and .csv
+#### What can I do with the Lotame Data Stream?
 
+This firehose can be used to power your individual data science and data needs, including product and content recommendation engines, personalized experiences and messaging, and other proprietary modeling. We supply the data, and you take it from there, working outside the limits of a traditional DMP to fuel even the most advanced data-driven applications.
 
-* Easily port those files into other applications like Redshift, Athena, and Domo
+While the applications for Data Stream are as plentiful and varied as business itself, there are several areas where Data Stream fits naturally. Today, clients are harnessing Data Stream to underpin enterprise-level solutions like content and product recommendation engines, personalized digital experiences, fraud prevention and risk mitigation strategies, customer attribution modeling, and to develop deeper insights into their target consumers
 
+#### What can I do with the recipes in this cookbook? 
 
-* Be entertained by our charming data science team 
+1. Easily pull down Lotame Data Stream files 
+2. Easily transform those Lotame Data Stream files into .json and .csv
+3. Easily port those files into other applications like Redshift, Athena, and Domo
+4. Be entertained by our charming data science team 
 
-#### What will you need? 
-1. Your Lotame DMP platform login.
-   
-   In order to access your Data Stream feeds you’ll need your username and password. You’ll receive an automated email asking you set up your password for https://platform.lotame.com/. If you haven’t received this email or you’d like your password reset, please contact your Sales person, Sales Engineer, CSM or TAM. 
-   
-2. Your Lotame DMP Client Account ID.
-
-   This numeric ID value will be provided by your Sales Engineer or Sales person. You will need this when making API requests since your Data Stream feed has been customized and enabled based on your client account. 
-
-3. The Link To The Lotame Swagger Api Documentation.
-
-   The API documentation, including a live, web-based interactive interface can be found [here](<https://api.lotame.com/docs>). Further materials regarding the full set of APIs is available [here](<https://mylotame.force.com/s/article//Administrative-ReST-API>), but not required reading for this tutorial.
-
-4. Familiarity With Amazon S3 Hosting And Online Storage. 
-
-   For more details regarding Amazon S3 where the feed is outputted to please refer to Amazon’s [AWS developer guides](<https://aws.amazon.com/s3/developer-resources/>).
-
-5. Subscription to the DataStream files.
-
-   If you have not been given access to the files themselves, you will need to request access from your Sales person, Sales Engineer, CSM or TAM. 
-   
-#### Want us to make it easy for you?
-
-We get it... You don’t have time to do all that stuff up there. 
-
-No probs... Just click [here](<mailto:salesengineering@lotame.com?subject=DataStream_Cookbook&body=Hi there Lotame Sales Engineering. I’m interested in exploring the DataStream_Cookbook github. Can you set me up, please? I’ll need the following: An account, a login, a subscription to the 1% feed, and at least one funny quip about my being into cooking. Thanks!> "Make it esay on yourself. Just email us.").
+#### How do I start? 
+Click into the recipes listed in the master branch. The readme files will tell you everything you need to know to start working with our prospect facing files. These are 1% versions of the full files.
 
 
 
