@@ -1,5 +1,7 @@
 # Data Stream Cookbook
 
+![](https://resources.lotame.com/hubfs/Data_Stream_Cookbook.png)
+
 ### Welcome Data Chefs! 
 
 Whether this is your first bake or you’ve already earned a couple michelin stars, this GitHub is the place for you to get started with the Lotame Data Stream suite of products. 
