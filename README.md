@@ -28,7 +28,7 @@ While the applications for Data Stream are as plentiful and varied as business i
 
 1. [Easily pull down Lotame Data Stream files](Recipes/Easily_Pull_Down_Files)
 2. [Easily transform those Lotame Data Stream files into .json and .csv](Recipes/Convert_Files_Into_JSON_And_CSV)
-3. [Easily port those files into other applications like Redshift, Athena, and Domo](Recipes/Load_Files_Into_Athena)
+3. Easily port those files into other applications like [Athena](Recipes/Load_Files_Into_Athena) and [Redshift](Recipes/Load_Files_Into_Redshift)
 4. Be entertained by our charming data science team 
 
 #### How do I start? 
