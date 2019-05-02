@@ -1,9 +1,14 @@
 # Recipe Athena
 #### ...After I have the csv file for behavior mapping and data stream CSV file...
 
-This recipe assumes I have some LDX (3rd-party) DataStream data downloaded and converted into csv files, as well as the accompanying LDX behavior mapping file downloaded and converted to a csv.
+#### ~15 minutes and a few ingredients...
+1. Lotame Data Stream files: downloaded, uncompressed, and converted into csv format
+2. Lotame Data Stream LDX behavior mapping file downloaded and converted to csv format
+2. Access to the Amazon AWS CLI and Amazon Athena
+4. A burning desire for deeper analytical understandings of your data
 
-In this Recipe, we will use AWS Athena to read this data, and do some really basic data analysis.
+#### ...will yield...
+* A better understanding of how to use AWS Athena to read this data, and do some really basic data analysis.
 
 ## Step 1: Copy DataStream data to an S3 bucket
 
@@ -19,7 +24,11 @@ aws s3 cp $PATH_TO_YOUR_LOCAL_DATASTREAM_DIRECTORY/ $PATH_TO_YOUR_S3_TARGET_DATA
 
 ## Step 2: Get AWS Athena access and define the table structures
 
-Here I'm assuming you've used "," as the delimiter for the data stream sample data, and use a special charactor \001 as the mapping delimiter, as specified in earlier recipes. If you've used other delimiters, you will need to alter these table definitions accordingly.
+Here I'm assuming you've used:
+* `,` as the delimiter for the data stream sample data
+* the special charactor `\001` as the mapping delimiter
+
+...as specified in earlier recipes. If you've used other delimiters, you will need to alter these table definitions accordingly.
 
 ```odpsql
 -- Assume you have copied all the data to s3 bucket correctly
@@ -43,7 +52,7 @@ tblproperties ("skip.header.line.count"="1");
 
 ## Step 3, Analyze the results
 
-Since integer behavior ids don't tell me anything useful, Let's find some interesting behaviors from the mapping file:
+Since integer behavior ids don't tell me anything useful, let's find some interesting behaviors using the mapping file:
 
 ```odpsql
 select distinct behavior_path from Mapping_Sample limit 200 ;
@@ -68,7 +77,13 @@ select distinct behavior_path from Mapping_Sample limit 200 ;
 	Lotame Category Hierarchy^Relationships^Dating
 ```
 
-Oh Man, many interesting behavior names. As a sport fans like me, I want to know what kind of sport is the most popular in our data, so I will run some simple analysis on the data to find out. The hierarchy for sport is this "Lotame Category Hierarchy^Sports & Recreation" in the mapping file, so any behaviors whose paths start with that substring are "sports" behaviors.
+Oh man, many interesting behavior names. 
+
+A sport fans like myself- I want to know what kind of sport is the most popular in our data. 
+
+So, I will run some simple analysis on the data to find out. 
+
+The hierarchy for sport is "Lotame Category Hierarchy^Sports & Recreation" in the mapping file, so any behaviors whose paths start with that substring are "sports" behaviors.
 
 ```odpsql
 -- Assume we already create DataStream_Sample and Mapping_Sample in Athena
@@ -85,10 +100,9 @@ a.behavior_path like 'Lotame Category Hierarchy^Sports & Recreation%' and b.acti
 group by behavior_path order by cc desc;
 ```
 
-Then we can get the result we are looking for,
+There. Now we can get the result we are looking for.
 
 ```bash
-
  	behavior_path	cc
 	Lotame Category Hierarchy^Sports & Recreation^Football (American)	45380
 	Lotame Category Hierarchy^Sports & Recreation^Soccer	41506
@@ -99,6 +113,9 @@ Then we can get the result we are looking for,
 	Lotame Category Hierarchy^Sports & Recreation^Skiing	33310
 	Lotame Category Hierarchy^Sports & Recreation^Baseball	32737
 	Lotame Category Hierarchy^Sports & Recreation^Basketball	32506
-
-Surprisingly, Basketball is not very high rank here, that is very interesting. Please go ahead to find your run there!!!
 ```
+
+Surprisingly, Basketball is not ranked very highly here. 
+
+Now go find your own surprising and interesting conclusions hidden in your data!
+

@@ -9,14 +9,22 @@ Before I can do some neat stuff, I've got to get these files into some kind of f
 
 Looks like these files are all `.gz`... compressed gzipped files. I'll need to uncompress them before I can see what the data looks like and decide how to do neat things.
 
-## Ingredients
+#### ~30 minutes and a few ingredients...
 1. Python version
-    >`2.7` or `3.6`
+    
+    `2.7` or `3.6`
 
 2. Python modules 
-    >`sys`, `os`, `re`, `gzip`, `glob`, `json`, `argparse`
+    
+    `sys`, `os`, `re`, `gzip`, `glob`, `json`, `argparse`
 
 3. A sense of adventure and awe of the unknown
+
+
+#### ...will yield...
+* A python-based extractor for gzip compressed Lotame Data Stream files
+* A python-based json-to-csv convertor for uncompressed Lotame Data Stream files 
+
 
 ## GzipExtractor.py
 
@@ -48,11 +56,11 @@ with gzip.open(gzipped, 'rb') as g:
     print(uncompressed_file_contents)
 ```
 ```python
-{"id":{"val":"e53a64e8-c7bb-46e4-a470-ff47d79dbaba","type":"mobile","sub_type":"GAID"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":2215,"ts":1552640493,"add":[13114472,18832363]}]}
-{"id":{"val":"1b82b3b5988944dcde9dee71bb1163a9082adbd2","type":"mobile","sub_type":"SHA1"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":2215,"ts":1552640637,"add":[13114472,648193,24729421]}]}
-{"id":{"val":"148fc1d44c1c4940fe1456e6cafc439fec88cc48","type":"mobile","sub_type":"SHA1"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":2215,"ts":1552640775,"add":[648391,13114472,24729326]}]}
-{"id":{"val":"9B85B613-84DA-42A6-9EEE-9ABF38528C28","type":"mobile","sub_type":"IDFA"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":2215,"ts":1552640876,"remove":[62900413]}]}
-{"id":{"val":"df4b3e44-e58f-4ccb-9789-241c4e2d87a9","type":"mobile","sub_type":"GAID"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":2215,"ts":1552643600,"add":[13114472,18832363,648103,24729283]}]}
+{"id":{"val":"abc123","type":"mobile","sub_type":"GAID"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":1234,"ts":1552640493,"add":[987,81283712]}]}
+{"id":{"val":"abc456","type":"mobile","sub_type":"SHA1"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":1234,"ts":1552640637,"add":[987,718237,18283]}]}
+{"id":{"val":"abc789","type":"mobile","sub_type":"SHA1"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":1234,"ts":1552640775,"add":[718213,987,3462]}]}
+{"id":{"val":"def123","type":"mobile","sub_type":"IDFA"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":1234,"ts":1552640876,"remove":[9971238]}]}
+{"id":{"val":"def456","type":"mobile","sub_type":"GAID"},"country":"US","region":"na","events":[{"tap":"DEVICE","c":1234,"ts":1552643600,"add":[987,87123,3218738,2758912]}]}
 ```
 That worked... Cool, now onto making it useful.
 
@@ -172,12 +180,12 @@ for json_file in glob.glob(os.path.join(path, '*.json')):
 ```
 
 ```python
-{u'country': u'US', u'region': u'na', u'id': {u'type': u'cookie', u'val': u''}, u'events': [{u'c': 2215, u'add': [8851984, 14206839, 13114472, 34922564, 2296573], u'tap': u'DEVICE', u'ts': 1552646987}]}
-{u'country': u'CA', u'region': u'na', u'id': {u'type': u'cookie', u'val': u''}, u'events': [{u'c': 2215, u'add': [648203, 2296565, 13114472, 24729402, 14198343, 8851920, 2296573], u'tap': u'DEVICE', u'ts': 1552646990}]}
-{u'country': u'US', u'region': u'na', u'id': {u'type': u'mobile', u'sub_type': u'GAID', u'val': u'ea1e0770-bab0-43ae-8338-014486230c0f'}, u'events': [{u'c': 2215, u'add': [13114472], u'tap': u'DEVICE', u'ts': 1552639810}]}
-{u'country': u'US', u'region': u'na', u'id': {u'type': u'mobile', u'sub_type': u'SHA1', u'val': u'2ceda19060041c03d9aeb2473872563e8e16542b'}, u'events': [{u'c': 2215, u'add': [13114472, 648377, 24729307], u'tap': u'DEVICE', u'ts': 1552639882}]}
-{u'country': u'US', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'25d9ba3bfd1b558efd03ad963a84fd92'}, u'events': [{u'c': 2215, u'add': [8852078, 34922299, 2296544, 58367460, 648085, 24729309, 61799346], u'tap': u'DEVICE', u'ts': 1552657490}]}
-{u'country': u'CA', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'd6b776b5cb3d089ce133e0d9b86edcdf'}, u'events': [{u'c': 2215, u'add': [43594061, 648203, 12863912, 2296544, 24729402, 8851920, 48689287], u'tap': u'DEVICE', u'ts': 1552657702}]}
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'abc123'}, u'events': [{u'c': 1234, u'add': [187293, 1872, 987, 612729, 9184], u'tap': u'DEVICE', u'ts': 1552646987}]}
+{u'country': u'CA', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'abc456'}, u'events': [{u'c': 1234, u'add': [817263, 7765, 987, 918264, 14198343, 38496, 9184], u'tap': u'DEVICE', u'ts': 1552646990}]}
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'mobile', u'sub_type': u'GAID', u'val': u'abc789'}, u'events': [{u'c': 1234, u'add': [987], u'tap': u'DEVICE', u'ts': 1552639810}]}
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'mobile', u'sub_type': u'SHA1', u'val': u'def123'}, u'events': [{u'c': 1234, u'add': [987, 540, 776152], u'tap': u'DEVICE', u'ts': 1552639882}]}
+{u'country': u'US', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'def456'}, u'events': [{u'c': 1234, u'add': [13387, 129873, 7829734, 23484, 23984, 8127347, 1237], u'tap': u'DEVICE', u'ts': 1552657490}]}
+{u'country': u'CA', u'region': u'na', u'id': {u'type': u'cookie', u'val': u'def789'}, u'events': [{u'c': 1234, u'add': [2174678, 623748, 2438975, 2348, 918264, 38496, 81283], u'tap': u'DEVICE', u'ts': 1552657702}]}
 ```
 
 Nice, OK, good stuff. 

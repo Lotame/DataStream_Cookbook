@@ -15,6 +15,19 @@ Like all my Big Data projects, I'm going to finish Big by starting Small.
 
 I think I'll start by trying to download some of these DataStream files, see what's what, and go from there.
 
+#### ~30 minutes and a few ingredients...
+1. Python version
+    >`2.7` or `3.6`
+
+2. Python modules 
+    >`sys`, `boto3`, `botocore`
+   
+3. A tolerance for poor humor
+
+
+#### ...will yield...
+A python-based download utility for Lotame Data Stream files stored in s3.
+
 ## DataStreamDownloader.py
 
 First, I need to access the LotameAPI. 
@@ -37,7 +50,7 @@ One of the methods in this class is called```getUpdates()```, and includes some 
 >>> print(updates)
 ```
 ```
-[{u'feeds': [{u'files': [u'007d5141-e61e-4a38-9b78-5b146936a98c.gz', u'36ede3dd-5bf6-43ff-b7be-30fbac371e92.gz', u'3a263be0-421c-4401-a8fe-b8e3dcb62cf6.gz', u'662d52e7-e4d4-4593-87cd-368f66cfeed5.gz', u'6bae4aa3-8e76-4168-81cf-d60542754f46.gz', u'787b2776-feb0-49a2-8d41-798adbd6e33f.gz', u'bb142eec-8381-4d48-9230-9b1fdbfb61b9.gz'], u'id': 240, u'location': u's3://lotame-firehose/2215/na/cookie'}], u's3creds': {u'secretAccessKey': u'tGlSclMEw8Oah4I679qalwQ3AhuplN4vham2b3CY', u'sessionToken': u'FQoGZXIvYXdzEFcaDC41gUVs7b5tQQlDDyKTArnEJQPxDy4ZOce4bOebQ/3+C7DtjOkCxP1uUJlBImpaurGkmLUHjuYE1Tz2IbbYEIZcvUcrRGX+6txJ7ptZX2UuWBe4fJbPRE7JwwmWWftViqT2bq5KLGHRjklZGq2pgE6vUSk91J4doUpMOv6NBwvtEoyha5CDFDES3FNzAVD/nDRNXjW6Aqh0BuwzB79pX8mQSbIkNJ+NaVRT8cMoYB4WwKyNQuFUO8FBZ83SHjVHwavXQf7xAT07Kmb3kqzfNDYkpJeW0cBAlpF8ATrcvZLPrg58BojXRxphr5RUFlFP+NHmXg5wPC19O42753hLty3tD910/XOxQpGNIgPU0e3AdF2I9+katAxqBUttVC8FEwxjKLS6sOQF', u'expiration': 1552700788000, u'accessKeyId': u'ASIAUQ6Z75CF2KID75GG'}}, {u'feeds': [{u'files': [u'25515ece-d44b-42ab-90cd-6eaa330fe8bc.gz', u'564bf16e-fe3f-4a19-b5ca-5f8790c29685.gz', u'bc777e62-29e2-4986-9895-7501dd5e1f45.gz', u'c151c864-08d0-4064-ad6d-7066aab9280a.gz', u'e6c86d66-329d-461d-a1f7-4c5c1fde574b.gz', u'f03e75cd-2d77-4e0c-a33f-51494847c3e2.gz', u'f4527519-3ba3-4b14-b8cc-96956e4b1e7a.gz'], u'id': 241, u'location': u's3://lotame-firehose/2215/na/mobile'}], u's3creds': {u'secretAccessKey': u't36fMtSAgr42Vw4NJZp+6Fox/vuL6YBHa+O11Sdu', u'sessionToken': u'FQoGZXIvYXdzEFcaDHBpNqJPoRtBHg69OCKTAqN1j68Nq57ezxvx+kN5MjpQJKwBQHRgMfENnhgdoYaZEy15ezY735KByVvzo2J66luOPYHNUi/Rn4dh0VZO14HsDIo9HfcIvFWNFVrG/JknM4hn8hIlzPGaIlOU7mimY/07fT9kNPwYeGPV0mm03+V5TQ/LBKoNnl0ihMHqBtAcFhq9VA0FIzOev1qz3sgOoiIxJWtEJz7f6jFts0ZmbqGoBYGZk/9s6mMKDHXQvH1wWSYnwtarNa7R+mBJMR7rShCrZMJ1OuXrDel2teoULG4cpbDCioo1dNeV4uz83wanwPuFScgF+RYkJDHSzmMJUgbob10eeodCJc4VcGkSgJLPg+IRPdLxTQtd5AAfO+MkISthKL+6sOQF', u'expiration': 1552700799000, u'accessKeyId': u'ASIAUQ6Z75CF4IAUVTUE'}}]
+[{u'feeds': [{u'files': [u'7d873ef1-8a03-4184-98e1-215095b28a89.gz', u'f7c09eaa-088a-48fc-9659-341df5de920d.gz', u'd95dff17-5932-4aa5-9ad5-584871e267a8.gz', u'009fda44-f681-4bed-8951-3bd0e08b5f6c.gz', u'9c5a66b5-a2a3-4841-8b75-bfd4f085553d.gz', u'0c1af5ce-1447-409c-a6b9-1a659a67b20c.gz', u'f260eede-967d-40ca-943e-b2268187d8a7.gz'], u'id': 112233, u'location': u's3://lotame-firehose/1234/na/cookie'}], u's3creds': {u'secretAccessKey': u'blah', u'sessionToken': u'blah', u'expiration': 1552700788000, u'accessKeyId': u'ASIAUQ6Z75CF2KID75GG'}}, {u'feeds': [{u'files': [u'7fb1c995-d3ac-4c68-b089-ce1847df886c.gz', u'259874b1-3114-427f-bef7-41ed23f95299.gz', u'e7453b95-a9bc-48dc-985f-a5b999697a83.gz', u'895e2ed9-3152-4c9b-893f-7ffd27710724.gz', u'cd15fd3e-fc36-4d48-b661-b74bc7d8ca72.gz', u'a5bb2f83-24a1-4433-8ed9-37203f64a30f.gz', u'2d558578-fa3f-4304-b3a6-e133a6964aeb.gz'], u'id': 446688, u'location': u's3://lotame-firehose/1234/na/mobile'}], u's3creds': {u'secretAccessKey': u'blah', u'sessionToken': u'blah', u'expiration': 1552700799000, u'accessKeyId': u'ASIAUQ6Z75CF4IAUVTUE'}}]
 ```
 
 Looks like a list, so I'll iterate over it and print out each update individually.
@@ -47,8 +60,8 @@ Looks like a list, so I'll iterate over it and print out each update individuall
 ...     print(update)
 ```
 ```
-{u'feeds': [{u'files': [u'007d5141-e61e-4a38-9b78-5b146936a98c.gz', u'36ede3dd-5bf6-43ff-b7be-30fbac371e92.gz', u'3a263be0-421c-4401-a8fe-b8e3dcb62cf6.gz', u'662d52e7-e4d4-4593-87cd-368f66cfeed5.gz', u'6bae4aa3-8e76-4168-81cf-d60542754f46.gz', u'787b2776-feb0-49a2-8d41-798adbd6e33f.gz', u'bb142eec-8381-4d48-9230-9b1fdbfb61b9.gz'], u'id': 240, u'location': u's3://lotame-firehose/2215/na/cookie'}], u's3creds': {u'secretAccessKey': u'tGlSclMEw8Oah4I679qalwQ3AhuplN4vham2b3CY', u'sessionToken': u'FQoGZXIvYXdzEFcaDC41gUVs7b5tQQlDDyKTArnEJQPxDy4ZOce4bOebQ/3+C7DtjOkCxP1uUJlBImpaurGkmLUHjuYE1Tz2IbbYEIZcvUcrRGX+6txJ7ptZX2UuWBe4fJbPRE7JwwmWWftViqT2bq5KLGHRjklZGq2pgE6vUSk91J4doUpMOv6NBwvtEoyha5CDFDES3FNzAVD/nDRNXjW6Aqh0BuwzB79pX8mQSbIkNJ+NaVRT8cMoYB4WwKyNQuFUO8FBZ83SHjVHwavXQf7xAT07Kmb3kqzfNDYkpJeW0cBAlpF8ATrcvZLPrg58BojXRxphr5RUFlFP+NHmXg5wPC19O42753hLty3tD910/XOxQpGNIgPU0e3AdF2I9+katAxqBUttVC8FEwxjKLS6sOQF', u'expiration': 1552700788000, u'accessKeyId': u'ASIAUQ6Z75CF2KID75GG'}}
-{u'feeds': [{u'files': [u'25515ece-d44b-42ab-90cd-6eaa330fe8bc.gz', u'564bf16e-fe3f-4a19-b5ca-5f8790c29685.gz', u'bc777e62-29e2-4986-9895-7501dd5e1f45.gz', u'c151c864-08d0-4064-ad6d-7066aab9280a.gz', u'e6c86d66-329d-461d-a1f7-4c5c1fde574b.gz', u'f03e75cd-2d77-4e0c-a33f-51494847c3e2.gz', u'f4527519-3ba3-4b14-b8cc-96956e4b1e7a.gz'], u'id': 241, u'location': u's3://lotame-firehose/2215/na/mobile'}], u's3creds': {u'secretAccessKey': u't36fMtSAgr42Vw4NJZp+6Fox/vuL6YBHa+O11Sdu', u'sessionToken': u'FQoGZXIvYXdzEFcaDHBpNqJPoRtBHg69OCKTAqN1j68Nq57ezxvx+kN5MjpQJKwBQHRgMfENnhgdoYaZEy15ezY735KByVvzo2J66luOPYHNUi/Rn4dh0VZO14HsDIo9HfcIvFWNFVrG/JknM4hn8hIlzPGaIlOU7mimY/07fT9kNPwYeGPV0mm03+V5TQ/LBKoNnl0ihMHqBtAcFhq9VA0FIzOev1qz3sgOoiIxJWtEJz7f6jFts0ZmbqGoBYGZk/9s6mMKDHXQvH1wWSYnwtarNa7R+mBJMR7rShCrZMJ1OuXrDel2teoULG4cpbDCioo1dNeV4uz83wanwPuFScgF+RYkJDHSzmMJUgbob10eeodCJc4VcGkSgJLPg+IRPdLxTQtd5AAfO+MkISthKL+6sOQF', u'expiration': 1552700799000, u'accessKeyId': u'ASIAUQ6Z75CF4IAUVTUE'}}
+{u'feeds': [{u'files': [u'7d873ef1-8a03-4184-98e1-215095b28a89.gz', u'f7c09eaa-088a-48fc-9659-341df5de920d.gz', u'd95dff17-5932-4aa5-9ad5-584871e267a8.gz', u'009fda44-f681-4bed-8951-3bd0e08b5f6c.gz', u'9c5a66b5-a2a3-4841-8b75-bfd4f085553d.gz', u'0c1af5ce-1447-409c-a6b9-1a659a67b20c.gz', u'f260eede-967d-40ca-943e-b2268187d8a7.gz'], u'id': 112233, u'location': u's3://lotame-firehose/1234/na/cookie'}], u's3creds': {u'secretAccessKey': u'blah', u'sessionToken': u'blah', u'expiration': 9999999999999, u'accessKeyId': u'blah'}}
+{u'feeds': [{u'files': [u'7fb1c995-d3ac-4c68-b089-ce1847df886c.gz', u'259874b1-3114-427f-bef7-41ed23f95299.gz', u'e7453b95-a9bc-48dc-985f-a5b999697a83.gz', u'895e2ed9-3152-4c9b-893f-7ffd27710724.gz', u'cd15fd3e-fc36-4d48-b661-b74bc7d8ca72.gz', u'a5bb2f83-24a1-4433-8ed9-37203f64a30f.gz', u'2d558578-fa3f-4304-b3a6-e133a6964aeb.gz'], u'id': 446688, u'location': u's3://lotame-firehose/1234/na/mobile'}], u's3creds': {u'secretAccessKey': u'blah', u'sessionToken': u'blah', u'expiration': 9999999999999, u'accessKeyId': u'blah'}}
 ```
 
 Wow, lots of stuff in here. Looks like there's a couple of `feeds`, each with a `id` and S3 bucket `location`. Also a list of `files`. Also looks like some `s3creds` specified for each `update`: an `accessKeyId`, a `secretAccessKey`, and a `sessionToken`.
@@ -79,26 +92,26 @@ Also might as well iterate over all the `files` in each `feed`, since I know I n
 ...             print(file_object)
 ```
 ```
-{u'secretAccessKey': u'tGlSclMEw8Oah4I679qalwQ3AhuplN4vham2b3CY', u'sessionToken': u'FQoGZXIvYXdzEFcaDC41gUVs7b5tQQlDDyKTArnEJQPxDy4ZOce4bOebQ/3+C7DtjOkCxP1uUJlBImpaurGkmLUHjuYE1Tz2IbbYEIZcvUcrRGX+6txJ7ptZX2UuWBe4fJbPRE7JwwmWWftViqT2bq5KLGHRjklZGq2pgE6vUSk91J4doUpMOv6NBwvtEoyha5CDFDES3FNzAVD/nDRNXjW6Aqh0BuwzB79pX8mQSbIkNJ+NaVRT8cMoYB4WwKyNQuFUO8FBZ83SHjVHwavXQf7xAT07Kmb3kqzfNDYkpJeW0cBAlpF8ATrcvZLPrg58BojXRxphr5RUFlFP+NHmXg5wPC19O42753hLty3tD910/XOxQpGNIgPU0e3AdF2I9+katAxqBUttVC8FEwxjKLS6sOQF', u'expiration': 1552700788000, u'accessKeyId': u'ASIAUQ6Z75CF2KID75GG'}
-240
-s3://lotame-firehose/2215/na/cookie
-007d5141-e61e-4a38-9b78-5b146936a98c.gz
-36ede3dd-5bf6-43ff-b7be-30fbac371e92.gz
-3a263be0-421c-4401-a8fe-b8e3dcb62cf6.gz
-662d52e7-e4d4-4593-87cd-368f66cfeed5.gz
-6bae4aa3-8e76-4168-81cf-d60542754f46.gz
-787b2776-feb0-49a2-8d41-798adbd6e33f.gz
-bb142eec-8381-4d48-9230-9b1fdbfb61b9.gz
-{u'secretAccessKey': u't36fMtSAgr42Vw4NJZp+6Fox/vuL6YBHa+O11Sdu', u'sessionToken': u'FQoGZXIvYXdzEFcaDHBpNqJPoRtBHg69OCKTAqN1j68Nq57ezxvx+kN5MjpQJKwBQHRgMfENnhgdoYaZEy15ezY735KByVvzo2J66luOPYHNUi/Rn4dh0VZO14HsDIo9HfcIvFWNFVrG/JknM4hn8hIlzPGaIlOU7mimY/07fT9kNPwYeGPV0mm03+V5TQ/LBKoNnl0ihMHqBtAcFhq9VA0FIzOev1qz3sgOoiIxJWtEJz7f6jFts0ZmbqGoBYGZk/9s6mMKDHXQvH1wWSYnwtarNa7R+mBJMR7rShCrZMJ1OuXrDel2teoULG4cpbDCioo1dNeV4uz83wanwPuFScgF+RYkJDHSzmMJUgbob10eeodCJc4VcGkSgJLPg+IRPdLxTQtd5AAfO+MkISthKL+6sOQF', u'expiration': 1552700799000, u'accessKeyId': u'ASIAUQ6Z75CF4IAUVTUE'}
-241
-s3://lotame-firehose/2215/na/mobile
-25515ece-d44b-42ab-90cd-6eaa330fe8bc.gz
-564bf16e-fe3f-4a19-b5ca-5f8790c29685.gz
-bc777e62-29e2-4986-9895-7501dd5e1f45.gz
-c151c864-08d0-4064-ad6d-7066aab9280a.gz
-e6c86d66-329d-461d-a1f7-4c5c1fde574b.gz
-f03e75cd-2d77-4e0c-a33f-51494847c3e2.gz
-f4527519-3ba3-4b14-b8cc-96956e4b1e7a.gz
+{u'secretAccessKey': u'blah', u'sessionToken': u'blah', u'expiration': 9999999999999, u'accessKeyId': u'blah'}
+112233
+s3://lotame-firehose/1234/na/cookie
+7d873ef1-8a03-4184-98e1-215095b28a89.gz
+f7c09eaa-088a-48fc-9659-341df5de920d.gz
+d95dff17-5932-4aa5-9ad5-584871e267a8.gz
+009fda44-f681-4bed-8951-3bd0e08b5f6c.gz
+9c5a66b5-a2a3-4841-8b75-bfd4f085553d.gz
+0c1af5ce-1447-409c-a6b9-1a659a67b20c.gz
+f260eede-967d-40ca-943e-b2268187d8a7.gz
+{u'secretAccessKey': u'blah', u'sessionToken': u'blah', u'expiration': 9999999999999, u'accessKeyId': u'blah'}
+446688
+s3://lotame-firehose/1234/na/mobile
+7fb1c995-d3ac-4c68-b089-ce1847df886c.gz
+259874b1-3114-427f-bef7-41ed23f95299.gz
+e7453b95-a9bc-48dc-985f-a5b999697a83.gz
+895e2ed9-3152-4c9b-893f-7ffd27710724.gz
+cd15fd3e-fc36-4d48-b661-b74bc7d8ca72.gz
+a5bb2f83-24a1-4433-8ed9-37203f64a30f.gz
+2d558578-fa3f-4304-b3a6-e133a6964aeb.gz
 ```
 
 Awesome, that functioned swellingly. 
@@ -144,12 +157,12 @@ Also, I'm going to remove most of those `print` lines 'cause that's going to get
 ```
 Session(region_name='us-east-1')
 s3.ServiceResource()
-{u'Body': <botocore.response.StreamingBody object at 0x110a05fd0>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200, 'RetryAttempts': 0, 'HostId': 'kzt9oD6kkuQo3xJ+kLGpFIzZV+02jzJz11UoxH31Usx4qx21Keet8eIFFoB9XxqeiCDSUYScX9U=', 'RequestId': '17D2DAC0F051C891', 'HTTPHeaders': {'content-length': '4073', 'x-amz-id-2': 'kzt9oD6kkuQo3xJ+kLGpFIzZV+02jzJz11UoxH31Usx4qx21Keet8eIFFoB9XxqeiCDSUYScX9U=', 'accept-ranges': 'bytes', 'x-amz-expiration': 'expiry-date="Sun, 19 May 2019 00:00:00 GMT", rule-id="45dayTTL"', 'last-modified': 'Wed, 03 Apr 2019 20:13:22 GMT', 'x-amz-request-id': '17D2DAC0F051C891', 'etag': '"e4f16e22c9295ed83f37752518fc275d"', 'date': 'Thu, 04 Apr 2019 01:14:41 GMT', 'server': 'AmazonS3', 'content-type': 'binary/octet-stream'}}, u'LastModified': datetime.datetime(2019, 4, 3, 20, 13, 22, tzinfo=tzutc()), u'ContentLength': 4073, u'ETag': '"e4f16e22c9295ed83f37752518fc275d"', u'Expiration': 'expiry-date="Sun, 19 May 2019 00:00:00 GMT", rule-id="45dayTTL"', u'Metadata': {}}
-{u'Body': <botocore.response.StreamingBody object at 0x110165450>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200, 'RetryAttempts': 0, 'HostId': 'HrziqiTR4mY9CYavNkm4VkBkL0Owum42NQkIHbYFTDr52NgfOI8vnEFX0g4gMmiKd5eBLwIrTwY=', 'RequestId': 'A5D599B2A0EA6B88', 'HTTPHeaders': {'content-length': '3794', 'x-amz-id-2': 'HrziqiTR4mY9CYavNkm4VkBkL0Owum42NQkIHbYFTDr52NgfOI8vnEFX0g4gMmiKd5eBLwIrTwY=', 'accept-ranges': 'bytes', 'x-amz-expiration': 'expiry-date="Sun, 19 May 2019 00:00:00 GMT", rule-id="45dayTTL"', 'last-modified': 'Wed, 03 Apr 2019 21:09:29 GMT', 'x-amz-request-id': 'A5D599B2A0EA6B88', 'etag': '"b3fea5e3abf9d2b7e113f0f849dfc12e"', 'date': 'Thu, 04 Apr 2019 01:14:42 GMT', 'server': 'AmazonS3', 'content-type': 'binary/octet-stream'}}, u'LastModified': datetime.datetime(2019, 4, 3, 21, 9, 29, tzinfo=tzutc()), u'ContentLength': 3794, u'ETag': '"b3fea5e3abf9d2b7e113f0f849dfc12e"', u'Expiration': 'expiry-date="Sun, 19 May 2019 00:00:00 GMT", rule-id="45dayTTL"', u'Metadata': {}}
+{u'Body': <botocore.response.StreamingBody object at 0x110a05fd0>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200.........
+{u'Body': <botocore.response.StreamingBody object at 0x110165450>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200.........
 Session(region_name='us-east-1')
 s3.ServiceResource()
-{u'Body': <botocore.response.StreamingBody object at 0x110a3c890>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200, 'RetryAttempts': 0, 'HostId': 'm4bAwb+52tNJEHSa1QMdmsyHJxXJ2bXRa8dBc88Ns4/bkDyouQDAZCzU7CpnbpCH+94VQS7gqMo=', 'RequestId': 'F60B0CE4FB1B11CA', 'HTTPHeaders': {'content-length': '120846', 'x-amz-id-2': 'm4bAwb+52tNJEHSa1QMdmsyHJxXJ2bXRa8dBc88Ns4/bkDyouQDAZCzU7CpnbpCH+94VQS7gqMo=', 'accept-ranges': 'bytes', 'x-amz-expiration': 'expiry-date="Sun, 19 May 2019 00:00:00 GMT", rule-id="45dayTTL"', 'last-modified': 'Wed, 03 Apr 2019 23:08:01 GMT', 'x-amz-request-id': 'F60B0CE4FB1B11CA', 'etag': '"7267e34647acb92d618d0573960f7ecc"', 'date': 'Thu, 04 Apr 2019 01:14:42 GMT', 'server': 'AmazonS3', 'content-type': 'binary/octet-stream'}}, u'LastModified': datetime.datetime(2019, 4, 3, 23, 8, 1, tzinfo=tzutc()), u'ContentLength': 120846, u'ETag': '"7267e34647acb92d618d0573960f7ecc"', u'Expiration': 'expiry-date="Sun, 19 May 2019 00:00:00 GMT", rule-id="45dayTTL"', u'Metadata': {}}
-{u'Body': <botocore.response.StreamingBody object at 0x10fce62d0>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200, 'RetryAttempts': 0, 'HostId': 'Tk7oNzAfXDa+9BaCf7FqGvfAfIhkGlRY0R3aEnUivNGUywEgWWo1pVEUoFHHeu4apHu6hPr7F9U=', 'RequestId': 'CA4E5B975D536421', 'HTTPHeaders': {'content-length': '132942', 'x-amz-id-2': 'Tk7oNzAfXDa+9BaCf7FqGvfAfIhkGlRY0R3aEnUivNGUywEgWWo1pVEUoFHHeu4apHu6hPr7F9U=', 'accept-ranges': 'bytes', 'x-amz-expiration': 'expiry-date="Mon, 20 May 2019 00:00:00 GMT", rule-id="45dayTTL"', 'last-modified': 'Thu, 04 Apr 2019 00:15:50 GMT', 'x-amz-request-id': 'CA4E5B975D536421', 'etag': '"53f433541b0fd4abb23be76b1b3e454e"', 'date': 'Thu, 04 Apr 2019 01:14:42 GMT', 'server': 'AmazonS3', 'content-type': 'binary/octet-stream'}}, u'LastModified': datetime.datetime(2019, 4, 4, 0, 15, 50, tzinfo=tzutc()), u'ContentLength': 132942, u'ETag': '"53f433541b0fd4abb23be76b1b3e454e"', u'Expiration': 'expiry-date="Mon, 20 May 2019 00:00:00 GMT", rule-id="45dayTTL"', u'Metadata': {}}
+{u'Body': <botocore.response.StreamingBody object at 0x110a3c890>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200.........
+{u'Body': <botocore.response.StreamingBody object at 0x10fce62d0>, u'AcceptRanges': 'bytes', u'ContentType': 'binary/octet-stream', 'ResponseMetadata': {'HTTPStatusCode': 200.........
 ```
 
 Cool, so I've automated the creation of a `boto3.Session` for each `update`, created a `boto3.Resource` for S3 to access the files, and then used that to access the files and print out some details. So far, so good.
@@ -260,13 +273,13 @@ python DataStreamDownloader.py ~/Desktop/
 searching for firehose feed updates
 found 2
 
-processing feed 240
+processing feed 112233
     progress: |██████████████████████████████████████████████████| 100.0% complete
-    5 files transferred from s3://lotame-firehose/2215/na/cookie to /Users/aconant/Desktop/
+    5 files transferred from s3://lotame-firehose/1234/na/cookie to /Users/me/Desktop/
 
-processing feed 241
+processing feed 446688
     progress: |██████████████████████████████████████████████████| 100.0% complete
-    5 files transferred from s3://lotame-firehose/2215/na/mobile to /Users/aconant/Desktop/
+    5 files transferred from s3://lotame-firehose/1234/na/mobile to /Users/me/Desktop/
 ```
 
 Very slick, if I do say so myself. Which, well, I do.
