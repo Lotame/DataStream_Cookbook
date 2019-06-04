@@ -32,6 +32,8 @@ While the applications for Data Stream are as plentiful and varied as business i
 4. Be entertained by our charming data science team 
 
 #### How do I start? 
+First make sure you have Python installed on your local machine. It will be assumed you are already familiar with how to run Python scripts and how your commandline is set up. 
+Before you start running any of the examples you find here go to the lib folder in the repo and [follow the instructions](https://github.com/Lotame/DataStream_Cookbook/tree/master/Recipes/lib) to add your Lotame credentials to the lotame.properties file and put that file in the root of your home directory, ~/.
 Click into the recipes listed in the master branch. The readme files will tell you everything you need to know to start working with our prospect facing files. These are 1% versions of the full files.
 
 
