@@ -9,6 +9,15 @@
 #### ...will yield...
 * A  to read this data, and do some really basic data analysis.
 
+
+- - -
+
+NOTE: If this is the first recipe you're following make sure you have completed the [set up instructions](https://github.com/Lotame/DataStream_Cookbook/tree/master/Recipes/lib) found in the lib directory read me. You need to add your Lotame credentials to the lotame.properties file and put that file in the root of your home directory, ~/. You only need to do this step once in order to run all these recipes. 
+
+If you get an error stating: `No section: 'default'` then you probably didn't take care of the lotame.properties file first. 
+
+- - - 
+
 ## Upload to Amazon S3
 
 First, if you've got uncompressed Lotame Data Stream files in csv format on a local machine or stored somewhere that is not Amazon S3, here is how to rectify that situation.
