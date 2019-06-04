@@ -28,6 +28,17 @@ I think I'll start by trying to download some of these DataStream files, see wha
 #### ...will yield...
 A python-based download utility for Lotame Data Stream files stored in s3.
 
+- - -
+
+NOTE: If this is the first recipe you're following make sure you have completed the [set up instructions](https://github.com/Lotame/DataStream_Cookbook/tree/master/Recipes/lib) found in the lib directory read me. You need to add your Lotame credentials to the lotame.properties file and put that file in the root of your home directory, ~/. You only need to do this step once in order to run all these recipes. 
+
+If you get an error stating: `No section: 'default'` then you probably didn't take care of the lotame.properties file first. 
+
+- - - 
+
+
+
+
 ## DataStreamDownloader.py
 
 First, I need to access the LotameAPI. 
