@@ -26,6 +26,14 @@ Looks like these files are all `.gz`... compressed gzipped files. I'll need to u
 * A python-based json-to-csv convertor for uncompressed Lotame Data Stream files 
 * A python-based json-to-csv convertor for the Lotame LDX behavior mapping file
 
+- - -
+
+NOTE: If this is the first recipe you're following make sure you have completed the [set up instructions](https://github.com/Lotame/DataStream_Cookbook/tree/master/Recipes/lib) found in the lib directory read me. You need to add your Lotame credentials to the lotame.properties file and put that file in the root of your home directory, ~/. You only need to do this step once in order to run all these recipes. 
+
+If you get an error stating: `No section: 'default'` then you probably didn't take care of the lotame.properties file first. 
+
+- - - 
+
 ## GzipExtractor.py
 
 Thankfully trusty ol' Python includes some utilities to do just this, so I'ma launch it and gather my ingredients.
