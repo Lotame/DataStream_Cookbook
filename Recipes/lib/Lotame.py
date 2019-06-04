@@ -61,6 +61,7 @@ class Credentials:
                 self.auth_url = auth_url or config.get(profile,"auth_url")
                 self.client_id = client_id or config.get(profile,"client_id")
             except configparser.Error as e:
+                print("***\r\nYikes! Lotame.py couldn't load Credentials from the lotame.properties file.\r\n\r\nTry checking that the lotame.properties file is: \r\n\t1) located in your home directory or at the location specified by the `filename` parameter\r\n\t2) properly formatted according to DataStream_Cookbook/Recipes/lib/README.md\r\n\r\nGood Luck!\r\n\r\n\t...Just kidding. If issues persist just reach out to Lotame to get things working.\r\n\r\nPython Error below:\r\n***")
                 print(e)
 
 
