@@ -264,7 +264,7 @@ class FirehoseService:
             since_utc = str(int(round(since)))
         elif hours or minutes:
             since_utc = str(int(round(
-                ((datetime.now() - timedelta(hours=hours, minutes=minutes)) - datetime(1970, 1, 1)).total_seconds())))
+                ((datetime.utcnow() - timedelta(hours=hours, minutes=minutes)) - datetime(1970, 1, 1)).total_seconds())))
             params = {"since": since_utc}
         feeds = self.getFeeds()
         updates = self.getUpdatesForFeeds(feeds, params)

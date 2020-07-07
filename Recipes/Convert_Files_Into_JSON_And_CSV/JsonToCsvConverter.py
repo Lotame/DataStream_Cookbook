@@ -24,8 +24,8 @@ def writeCsvLine(csv_file=None, wrote_header=False, profile_id="", profile_type=
     if not wrote_header:
         writeCsvHeader(csv_file)
     add_string = "add" if add is True else "remove"
-    csv_file.write(str(profile_id) + "," + str(profile_type) + "," + str(region) + "," + str(country) + "," + str(
-        client) + "," + str(behavior) + "," + str(timestamp) + "," + add_string)
+    csv_file.write(str(profile_id) + "\t" + str(profile_type) + "\t" + str(region) + "\t" + str(country) + "\t" + str(
+        client) + "\t" + str(behavior) + "\t" + str(timestamp) + "\t" + add_string)
     csv_file.write("\n")
     return True
 
