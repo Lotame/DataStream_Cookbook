@@ -10,7 +10,7 @@
 #     1. import Lotame package:
 #          import Lotame
 #
-#     2. input the appropriate profile (DEFAULT_PROFILE), username, and password
+#     2. input the appropriate profile (DEFAULT_PROFILE), token, and access
 #          into the properties file (DEFAULT_PROPERTIES_FILENAME) 
 #
 #     3. instantiate a new instance of the Api class:
@@ -43,22 +43,20 @@ class Credentials:
     DEFAULT_PROPERTIES_FILENAME = expanduser("~") + "/" + "lotame.properties"
     DEFAULT_PROFILE = "default"
 
-    def __init__(self, filename=DEFAULT_PROPERTIES_FILENAME, profile=DEFAULT_PROFILE, username=None, password=None,
-                 base_url=None, auth_url=None, client_id=None):
-        if username and password and base_url and auth_url and client_id:
-            self.username = username
-            self.password = password
+    def __init__(self, filename=DEFAULT_PROPERTIES_FILENAME, profile=DEFAULT_PROFILE, token=None, access=None,
+                 base_url=None, client_id=None):
+        if token and access and base_url and client_id:
+            self.token = token
+            self.access = access
             self.base_url = base_url
-            self.auth_url = auth_url
             self.client_id = client_id
         else:
             try:
                 config = configparser.ConfigParser()
                 config.read(filename)
-                self.username = username or config.get(profile,"username")
-                self.password = password or config.get(profile,"password")
+                self.token = token or config.get(profile,"token")
+                self.access = access or config.get(profile,"access")
                 self.base_url = base_url or config.get(profile,"base_url")
-                self.auth_url = auth_url or config.get(profile,"auth_url")
                 self.client_id = client_id or config.get(profile,"client_id")
             except configparser.Error as e:
                 print("***\r\nYikes! Lotame.py couldn't load Credentials from the lotame.properties file.\r\n\r\nTry checking that the lotame.properties file is: \r\n\t1) located in your home directory or at the location specified by the `filename` parameter\r\n\t2) properly formatted according to DataStream_Cookbook/Recipes/lib/README.md\r\n\r\nGood Luck!\r\n\r\n\t...Just kidding. If issues persist just reach out to Lotame to get things working.\r\n\r\nPython Error below:\r\n***")
@@ -112,106 +110,83 @@ class Api:
                 url = self.populateUrlParams(url, key, val)
         return url
 
-    def getTicketGrantingTicket(self, auth_url=None, user=None, password=None):
-        if user is None:
-            user = self.credentials.username
-        if password is None:
-            password = self.credentials.password
-        if auth_url is None:
-            auth_url = self.credentials.auth_url
+    def mergeHeaders(self, base_headers):
+        headers = {}
+        headers.update(base_headers)
+        auth_headers = {
+            'x-lotame-token': self.credentials.token,
+            'x-lotame-access': self.credentials.access
+        }
+        headers.update(auth_headers)
+        return(headers)
 
-        payload = {'username': user, 'password': password}
-        headers = self.DEFAULT_PYTHON_HEADER
-        response = requests.post(auth_url, data=payload, headers=headers)
-        # if "401" in response:
-        #     raise Exception("401 -- Bad Lotame API Username/Password")
-        grant_location = response.headers['location']
-        return grant_location
-
-    def getService_ticket(self, service="", grant_location=""):
-        payload = {'service': service}
-        service_ticket = requests.post(grant_location, data=payload).text
-        return service_ticket
-
-    def initRequest(self, service="", auth_url=None, user=None, password=None):
-        grant_location = self.getTicketGrantingTicket(auth_url, user, password)
-        service_ticket = self.getService_ticket(service, grant_location)
-        return service_ticket
-
-    def performRequest(self, service="", auth_url=None, user=None, password=None, type=None, headers=None, body=None):
+    def performRequest(self, service="", user=None, access=None, type=None, headers=None, body=None):
         response = ""
-        service_ticket = self.initRequest(service, auth_url, user, password)
-        service_url = (('%s&ticket=%s') % (service, service_ticket)) if '?' in service else (
-                ('%s?ticket=%s') % (service, service_ticket))
+        full_headers=self.mergeHeaders(headers)
         if type == self.REQUEST_GET:
-            response = requests.get(service_url, headers=headers)
+            response = requests.get(service, headers=full_headers)
         elif type == self.REQUEST_POSTBODY:
-            response = requests.post(service_url, data=json.dumps(body), headers=headers)
+            response = requests.post(service, data=json.dumps(body), headers=full_headers)
         elif type == self.REQUEST_POST:
-            response = requests.post(service_url, headers=headers)
+            response = requests.post(service, headers=full_headers)
         elif type == self.REQUEST_PUT:
-            response = requests.put(service_url, data=json.dumps(body), headers=headers)
+            response = requests.put(service, data=json.dumps(body), headers=full_headers)
         elif type == self.REQUEST_DELETE:
-            response = requests.delete(service_url, headers=headers)
+            response = requests.delete(service, headers=full_headers)
         else:
             response = "Invalid request type"
         return response
 
-    def get(self, service, auth_url=None, user=None, password=None):
+    def get(self, service, user=None, access=None):
         # print("GET request " + service)
         return self.performRequest(
             service=service,
-            auth_url=auth_url,
             user=user,
-            password=password,
+            access=access,
             type=self.REQUEST_GET,
             headers=self.DEFAULT_JSON_RECEIVE_HEADER
         ).json()
 
-    def postBody(self, service="", body="", auth_url=None, user=None, password=None):
+    def postBody(self, service="", body="", user=None, access=None):
         # print("POST request: " + service)
         # print("body: " + str(body))
         return self.performRequest(
             service=service,
-            auth_url=auth_url,
             user=user,
-            password=password,
+            access=access,
             type=self.REQUEST_POSTBODY,
             headers=self.DEFAULT_JSON_SEND_HEADER,
             body=body
         ).json()
 
-    def post(self, service="", auth_url=None, user=None, password=None):
+    def post(self, service="", user=None, access=None):
         # print("POST request: " + service)
         return self.performRequest(
             service=service,
-            auth_url=auth_url,
             user=user,
-            password=password,
+            access=access,
             type=self.REQUEST_POST,
             headers=self.DEFAULT_JSON_SEND_HEADER
         ).json()
 
-    def put(self, service="", body="", auth_url=None, user=None, password=None):
+    def put(self, service="", body="", user=None, access=None):
         # print("POST request: " + service)
         # print("body: " + str(body))
         return self.performRequest(
             service=service,
-            auth_url=auth_url,
             user=user,
-            password=password,
+            access=access,
             type=self.REQUEST_PUT,
             headers=self.DEFAULT_JSON_SEND_HEADER,
             body=body
         ).json()
 
-    def delete(self, service="", auth_url=None, user=None, password=None):
+    def delete(self, service="", user=None, access=None):
         # print("DELETE request: " + service)
         return self.performRequest(
             service=service,
-            auth_url=auth_url,
             user=user,
-            password=password,
+            access=access,
             type=self.REQUEST_DELETE,
             headers=self.DEFAULT_JSON_RECEIVE_HEADER
         ).json()
