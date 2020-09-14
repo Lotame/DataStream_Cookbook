@@ -2,7 +2,7 @@
 ## Overview
 
 ### lotame.properties
-This is a properties file that stores API authentication specific parameters such as username, password, and client id.
+This is a properties file that stores API authentication specific parameters: 'token' and 'access' parameters specifying a token and access key for API authentication, and the client id to be used when connecting to the Lotame API. Instructions for obtaining an API token and access key can be found [here](https://my.lotame.com/t/35h37my/admin-api#authorized-access).
 
 While the properties file location is configurable, by default, the `Credentials` class (see below) expects this file to be located in the user's home directory, e.g. `~/lotame.properties`
 
