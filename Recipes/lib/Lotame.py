@@ -124,15 +124,15 @@ class Api:
         response = ""
         full_headers=self.mergeHeaders(headers)
         if type == self.REQUEST_GET:
-            response = requests.get(service, headers=full_headers)
+            response = requests.get(service, headers=full_headers, allow_redirects=False)
         elif type == self.REQUEST_POSTBODY:
-            response = requests.post(service, data=json.dumps(body), headers=full_headers)
+            response = requests.post(service, data=json.dumps(body), headers=full_headers, allow_redirects=False)
         elif type == self.REQUEST_POST:
-            response = requests.post(service, headers=full_headers)
+            response = requests.post(service, headers=full_headers, allow_redirects=False)
         elif type == self.REQUEST_PUT:
-            response = requests.put(service, data=json.dumps(body), headers=full_headers)
+            response = requests.put(service, data=json.dumps(body), headers=full_headers, allow_redirects=False)
         elif type == self.REQUEST_DELETE:
-            response = requests.delete(service, headers=full_headers)
+            response = requests.delete(service, headers=full_headers, allow_redirects=False)
         else:
             response = "Invalid request type"
         return response
